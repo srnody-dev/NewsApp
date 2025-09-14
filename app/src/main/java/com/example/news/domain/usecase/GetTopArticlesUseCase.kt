@@ -5,9 +5,9 @@ import com.example.news.domain.repository.NewsRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetLatestArticleUseCase @Inject constructor(private val newsRepository: NewsRepository) {
+class GetTopArticlesUseCase @Inject constructor(private val newsRepository: NewsRepository) {
 
     operator fun invoke(): Flow<List<Article>>{
-        return newsRepository.getLatestArticles()
+        return newsRepository.getTopArticles()
     }
 }

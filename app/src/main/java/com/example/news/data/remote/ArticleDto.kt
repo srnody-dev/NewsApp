@@ -9,11 +9,11 @@ data class ArticleDto ( //класс предоставляющий собой �
 
 
     @SerialName("description")
-    val description: String? ="",
+    val description: String ="",
     @SerialName("publishedAt")
     val publishedAt: String = "",
     @SerialName("source")
-    val source:SourceDto =SourceDto(),
+    val source: SourceDto= SourceDto(),
     @SerialName("title")
     val title: String = "",
     @SerialName("url")
