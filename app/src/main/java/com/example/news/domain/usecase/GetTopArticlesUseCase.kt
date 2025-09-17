@@ -9,5 +9,6 @@ class GetTopArticlesUseCase @Inject constructor(private val newsRepository: News
 
     operator fun invoke(): Flow<List<Article>>{
         return newsRepository.getTopArticles()
+
     }
 }

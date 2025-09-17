@@ -12,9 +12,9 @@ data class ArticleDbModel(
     val imageUrl: String?,
     val sourceName: String?,
     val publishedAt: Long,
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = false)
     val url: String,
-    val topic: String
+    val topic: String?
 
 
     )

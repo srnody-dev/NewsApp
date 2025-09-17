@@ -1,5 +1,6 @@
 package com.example.news.data.mapper
 
+import android.util.Log
 import com.example.news.data.local.ArticleDbModel
 import com.example.news.data.remote.NewsResponseDto
 import com.example.news.domain.entity.Article
@@ -7,16 +8,21 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 fun NewsResponseDto.toDbModel(topic: String): List<ArticleDbModel> {
-    return articles.map {
-        ArticleDbModel(
-            title = it.title,
-            url = it.title,
-            description = it.description,
-            imageUrl = it.urlToImage,
-            sourceName = it.source.name,
-            publishedAt = it.publishedAt.toTimestamp(),
-            topic = topic
-        )
+    return try {
+        articles.map { it ->
+            ArticleDbModel(
+                title = it.title ?: "No title",
+                url = it.title ?: "",
+                description = it.description ?: "",
+                imageUrl = it.urlToImage ?: "",
+                sourceName = it.source.name ?: "",
+                publishedAt = it.publishedAt.toTimestamp(),
+                topic = topic
+            )
+        }
+    } catch (e: Exception) {
+        Log.e("Mapper", "Error converting to DB model: ${e.message}")
+        emptyList()
     }
 }
 

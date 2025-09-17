@@ -6,7 +6,6 @@ import com.example.news.data.local.NewsDao
 import com.example.news.data.local.NewsDatabase
 import com.example.news.data.remote.NewsApiService
 import com.example.news.data.repository.NewsRepositoryImpl
-import com.example.news.di.DataModule.Companion.provideJson
 import com.example.news.domain.repository.NewsRepository
 import dagger.Binds
 import dagger.Module

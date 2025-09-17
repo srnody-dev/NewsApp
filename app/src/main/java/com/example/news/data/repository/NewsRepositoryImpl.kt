@@ -9,12 +9,8 @@ import com.example.news.data.remote.NewsApiService
 import com.example.news.domain.entity.Article
 import com.example.news.domain.entity.Topic
 import com.example.news.domain.repository.NewsRepository
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-import java.util.concurrent.CancellationException
 import javax.inject.Inject
 class NewsRepositoryImpl @Inject constructor(
     private val newsDao: NewsDao,
@@ -25,67 +21,81 @@ class NewsRepositoryImpl @Inject constructor(
         return newsDao.searchArticle(query).map { it.toEntities() }
     }
 
-
-    override fun getTopArticles(): Flow<List<Article>> {
-        TODO()
-    }
-
-
-
     override suspend fun updateArticlesForTopic(topic: String) {
         try {
+            Log.d("NewsRepository", "Updating articles for topic: $topic")
             val articles = loadArticles(topic)
-            newsDao.addArticles(articles)
+            Log.d("NewsRepository", "Loaded ${articles.size} articles for $topic")
+
+            val insertedIds = newsDao.addArticles(articles)
+            val successfulInserts = insertedIds.count { it != -1L }
+
+            Log.d("NewsRepository", "Successfully inserted $successfulInserts articles for $topic")
+
         } catch (e: Exception) {
             Log.e("NewsRepository", "Failed to update topic: $topic", e)
+        }
+    }
+    override suspend fun updateTopArticles() {
+        try {
+
+            Log.d("NewsRepository", "Making API calls for TopArticles:")
+            val response = newsApiService.loadTopArticles()
+
+            Log.d("NewsRepository", "API response for TopArticles ${response.articles.size} articles")
+            val articles = response.toDbModel(topic = "") //????
+
+            Log.d("NewsRepository", "Converted to ${articles.size} DB models")
+
+
+            Log.d("NewsRepository", "Loaded ${articles.size} articles for TopArticles")
+
+            //newsDao.addArticles(articles)
+            val insertedIds = newsDao.addArticles(articles)
+            val successfulInserts = insertedIds.count { it != -1L }
+
+            Log.d("NewsRepository", "Successfully inserted $successfulInserts articles for TopArticles")
+        } catch (e: Exception) {
+            Log.e("NewsRepository", "Failed to update top articles", e)
         }
     }
 
     private suspend fun loadArticles(topic: String): List<ArticleDbModel> {
         return try {
-            newsApiService.loadArticles(topic).toDbModel(topic)
+            Log.d("NewsRepository", "Making API call for topic: $topic")
+            val response = newsApiService.loadArticles(topic)
+            Log.d("NewsRepository", "API response for $topic: ${response.articles.size} articles")
+
+            val dbModels = response.toDbModel(topic)
+            Log.d("NewsRepository", "Converted to ${dbModels.size} DB models")
+
+            dbModels
         } catch (e: Exception) {
-            if (e is CancellationException) {
-                throw e
-            }
-            Log.e("NewsRepository", e.stackTraceToString())
+            Log.e("NewsRepository", "API Error for $topic: ${e.message}")
             listOf()
         }
     }
 
+
     override fun getArticleByTopic(topic: Topic): Flow<List<Article>> {
         return newsDao.getArticlesByTopic(topic.name).map { it.toEntities() }
     }
-
-    override suspend fun updateTopArticles() {
-        try {
-            val response = newsApiService.getTopArticles(sortBy = "popularity")
-            val articles = response.toDbModel("popularity") // Сохраняем с topic = "top"
-            newsDao.addArticles(articles)
-        } catch (e: Exception) {
-            Log.e("NewsRepository", "Failed to update top articles", e)
-        }
+    override  fun getTopArticles(): Flow<List<Article>> {
+        return newsDao.getPopularArticles().map { it.toEntities() }
     }
+
 
     override suspend fun updateArticlesForAllTopic() {
         val topicsToUpdate = Topic.entries
 
         topicsToUpdate.forEach { topic ->
             try {
-                updateArticlesForTopic(topic.name) // Обновляем каждую тему
+                updateArticlesForTopic(topic.name)
                 updateTopArticles()
             } catch (e: Exception) {
                 Log.e("NewsRepository", "Failed to update ${topic.name}", e)
             }
         }
-
-        updateTopArticles()
-    }
-
-
-
-    override suspend fun removeArticlesForTopic(topic: String) {
-        newsDao.deleteArticlesByTopics(topic)
     }
 
 }

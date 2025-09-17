@@ -3,13 +3,12 @@ package com.example.news.domain.entity
 enum class Topic(
     displayName: String
 ){
-    ALL("All"),
-    SCIENCE("Science"),
+    GENERAL("General"),
+    BUSINESS("Business"),
     HEALTH("Health"),
-    CULTURE("Culture"),
-    IT("It"),
-    POLITICS("Politics"),
+    TECHNOLOGY("Technology"),
+    SCIENCE("Science"),
     SPORTS("Sports"),
-    TRAVEL("Travel")
+    ENTERTAINMENT("Entertainment")
 
 }
