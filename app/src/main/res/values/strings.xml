@@ -3,4 +3,5 @@
     <string name="article_title">My News</string>
     <string name="trending_news">Trending news</string>
     <string name="see_all">See all</string>
+    <string name="search_news">Search News...</string>
 </resources>

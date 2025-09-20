@@ -15,11 +15,11 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Blue,
+    primary = SkyBlue ,
     onPrimary = Black100,
     background = White,
     onBackground = Black,
-    surface = BlueLight,
+    surface = WhiteBlue ,
     onSurface = Black,
     onSurfaceVariant = Grey,
 
@@ -52,7 +52,7 @@ fun NewsTheme(
     }
 
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = LightColorScheme,
         typography = Typography,
         content = content
     )

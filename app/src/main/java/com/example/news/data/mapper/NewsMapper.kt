@@ -10,15 +10,38 @@ import java.util.Locale
 fun NewsResponseDto.toDbModel(topic: String): List<ArticleDbModel> {
     return try {
         articles.map { it ->
+
+                    ArticleDbModel(
+                        title = it.title ?: "No title",
+                        url = it.url ?: "",
+                        description = it.description ?: "",
+                        imageUrl = it.urlToImage ?: "",
+                        sourceName = it.source.name ?: "",
+                        publishedAt = it.publishedAt.toTimestamp(),
+                        topic = topic
+                    )
+
+            }
+        } catch (e: Exception) {
+            Log.e("Mapper", "Error converting to DB model: ${e.message}")
+            emptyList()
+        }
+    }
+
+fun NewsResponseDto.toDbModelForSearch(query: String): List<ArticleDbModel> {
+    return try {
+        articles.map { it ->
+
             ArticleDbModel(
                 title = it.title ?: "No title",
-                url = it.title ?: "",
+                url = it.url ?: "",
                 description = it.description ?: "",
                 imageUrl = it.urlToImage ?: "",
                 sourceName = it.source.name ?: "",
                 publishedAt = it.publishedAt.toTimestamp(),
-                topic = topic
+                topic = "search:$query"
             )
+
         }
     } catch (e: Exception) {
         Log.e("Mapper", "Error converting to DB model: ${e.message}")
@@ -26,25 +49,25 @@ fun NewsResponseDto.toDbModel(topic: String): List<ArticleDbModel> {
     }
 }
 
-private fun String.toTimestamp(): Long {
-    val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-    return dateFormatter.parse(this)?.time ?: System.currentTimeMillis()
+    private fun String.toTimestamp(): Long {
+        val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+        return dateFormatter.parse(this)?.time ?: System.currentTimeMillis()
 
-}
+    }
 
 
-fun ArticleDbModel.toEntities(): Article {
-    return Article(
-        title = title,
-        description = description,
-        imageUrl = imageUrl,
-        sourceName = sourceName,
-        publishedAt = publishedAt,
-        url = url
-    )
+    fun ArticleDbModel.toEntities(): Article {
+        return Article(
+            title = title,
+            description = description,
+            imageUrl = imageUrl,
+            sourceName = sourceName,
+            publishedAt = publishedAt,
+            url = url
+        )
 
-}
+    }
 
-fun List<ArticleDbModel>.toEntities(): List<Article> {
-    return map { it.toEntities() }
-}
+    fun List<ArticleDbModel>.toEntities(): List<Article> {
+        return map { it.toEntities() }
+    }

@@ -5,11 +5,14 @@ import com.example.news.domain.entity.Topic
 import kotlinx.coroutines.flow.Flow
 
 interface NewsRepository {
-    suspend fun searchArticle(query:String): Flow<List<Article>>
+    fun getArticlesForQuery(query: String):Flow<List<Article>>
+
+    suspend fun updateArticlesForQuery(query: String)
 
     fun getTopArticles():Flow<List<Article>>
 
     suspend fun updateTopArticles()
+
 
     suspend fun updateArticlesForTopic(topic: String) //обновить статьи для определенной темы topic-тема
 

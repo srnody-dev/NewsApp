@@ -62,7 +62,9 @@ fun ArticleScreen(
 
     Scaffold(modifier = modifier.fillMaxSize(), topBar = {
 
-        ArticleTopBar(onClickToMenu = onNavigateToMenu, onClickToSearch = onClickToSearch)
+        ArticleTopBar(modifier= Modifier,
+            onClickToMenu = onNavigateToMenu,
+            onClickToSearch = onClickToSearch)
 
     }) { paddingValues ->
         Column(modifier = modifier.padding(paddingValues)) {
@@ -123,13 +125,13 @@ private fun TopicChip(
             Text(
                 text = topic.name,
                 fontSize = 14.sp,
-                fontWeight = FontWeight.Normal
+                fontWeight = FontWeight.Normal, color = MaterialTheme.colorScheme.onSurface
             )
                 },
         modifier = modifier,
         colors = FilterChipDefaults.filterChipColors(
             selectedContainerColor = MaterialTheme.colorScheme.primary,
-            selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+            selectedLabelColor = MaterialTheme.colorScheme.onSurface
         )
     )
 }
@@ -142,7 +144,7 @@ private fun ArticleTopBar(
     onClickToSearch: () -> Unit
 ) {
     TopAppBar(
-        modifier = modifier,
+        modifier = modifier.background(MaterialTheme.colorScheme.background),
         title = {
             Text(
                 fontSize = 26.sp,
@@ -164,22 +166,25 @@ private fun ArticleTopBar(
         },
         actions = {
             Icon(
+                tint = MaterialTheme.colorScheme.onSurface,
                 imageVector = Icons.Default.Search,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(50.dp)
+                    .size(45.dp)
                     .clip(CircleShape)
                     .clickable(onClick = onClickToSearch)
                     .padding(8.dp)
             )
             Icon(
+                tint = MaterialTheme.colorScheme.onSurface,
                 imageVector = Icons.Default.Notifications,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(50.dp)
+                    .size(45.dp)
                     .clip(CircleShape)
                     .clickable(onClick = onClickToMenu)
                     .padding(8.dp)
+
             )
         }
     )

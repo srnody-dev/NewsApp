@@ -9,7 +9,7 @@ interface NewsApiService { //для загрузки данных из сети
 
     @GET("v2/top-headlines?apiKey=ac932b60a57f4df4b56c6574732beb4d")
     suspend fun loadArticles( //для определенного topic
-        @Query("category") category: String //это должно быть только для query и возможно Topic ALL
+        @Query("category") category: String
     ): NewsResponseDto
 
 
