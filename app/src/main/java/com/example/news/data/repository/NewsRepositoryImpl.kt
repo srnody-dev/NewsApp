@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import retrofit2.http.Url
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -96,6 +97,10 @@ class NewsRepositoryImpl @Inject constructor(
 
     override fun getArticlesForQuery(query: String): Flow<List<Article>> {
         return newsDao.searchArticle(query).map { it.toEntities() }
+    }
+
+    override fun getArticle(url: String): Flow<Article> {
+        return newsDao.getArticle(url).map { it.toEntities() }
     }
 
 

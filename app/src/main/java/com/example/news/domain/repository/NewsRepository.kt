@@ -3,9 +3,12 @@ package com.example.news.domain.repository
 import com.example.news.domain.entity.Article
 import com.example.news.domain.entity.Topic
 import kotlinx.coroutines.flow.Flow
+import retrofit2.http.Url
 
 interface NewsRepository {
     fun getArticlesForQuery(query: String):Flow<List<Article>>
+
+    fun getArticle(url: String) :Flow<Article>
 
     suspend fun updateArticlesForQuery(query: String)
 

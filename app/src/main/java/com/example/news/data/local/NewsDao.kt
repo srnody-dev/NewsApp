@@ -13,6 +13,10 @@ interface NewsDao {
     @Query("SELECT * FROM articles WHERE topic = :topicName ORDER BY publishedAt DESC")
     fun getArticlesByTopic(topicName: String): Flow<List<ArticleDbModel>>
 
+
+    @Query("SELECT * FROM ARTICLES WHERE url = :url")
+    fun getArticle(url: String):Flow<ArticleDbModel>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addArticles(articles: List<ArticleDbModel>): List<Long>
 

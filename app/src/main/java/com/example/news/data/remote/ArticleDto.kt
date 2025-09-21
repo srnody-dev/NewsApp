@@ -10,6 +10,10 @@ data class ArticleDto ( //класс предоставляющий собой �
 
     @SerialName("description")
     val description: String ="",
+
+    @SerialName("content")
+    val content: String = "",
+
     @SerialName("publishedAt")
     val publishedAt: String = "",
     @SerialName("source")

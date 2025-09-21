@@ -27,6 +27,7 @@ import javax.inject.Singleton
 interface DataModule {
 
     @Binds
+    @Singleton
     fun bindsRepository(repositoryImpl: NewsRepositoryImpl): NewsRepository
 
 

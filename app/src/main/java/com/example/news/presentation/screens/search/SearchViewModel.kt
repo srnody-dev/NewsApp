@@ -85,16 +85,12 @@ class SearchViewModel @Inject constructor(
                 query.update { command.query.trim() }
             }
 
-            is SearchCommand.SwitchPinnedStatus -> {
-
-            }
         }
     }
 
     sealed interface SearchCommand {
         data object Back : SearchCommand
         data class InputQuery(val query: String) : SearchCommand
-        data class SwitchPinnedStatus(val articleId: Int) : SearchCommand //ПОТОМ ДОБАВЬ РЕАЛИЗАЦИЮ
     }
 
     sealed interface SearchState {

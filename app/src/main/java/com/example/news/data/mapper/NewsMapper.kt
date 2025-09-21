@@ -18,6 +18,7 @@ fun NewsResponseDto.toDbModel(topic: String): List<ArticleDbModel> {
                         imageUrl = it.urlToImage ?: "",
                         sourceName = it.source.name ?: "",
                         publishedAt = it.publishedAt.toTimestamp(),
+                        content = it.content ?: "",
                         topic = topic
                     )
 
@@ -39,6 +40,7 @@ fun NewsResponseDto.toDbModelForSearch(query: String): List<ArticleDbModel> {
                 imageUrl = it.urlToImage ?: "",
                 sourceName = it.source.name ?: "",
                 publishedAt = it.publishedAt.toTimestamp(),
+                content = it.content ?: "",
                 topic = "search:$query"
             )
 
@@ -63,6 +65,7 @@ fun NewsResponseDto.toDbModelForSearch(query: String): List<ArticleDbModel> {
             imageUrl = imageUrl,
             sourceName = sourceName,
             publishedAt = publishedAt,
+            content = content,
             url = url
         )
 
