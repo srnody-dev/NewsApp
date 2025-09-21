@@ -34,27 +34,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.room.util.TableInfo
 import coil3.compose.AsyncImage
 import com.example.news.presentation.utils.formatDate
 
-
-@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun ContentArticle(
     onFinished: () -> Unit,
-    viewModel: ContentArticleViewModel = hiltViewModel(
-
-    )
+    viewModel: ContentArticleViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.collectAsState()
     var currentState = state.value
+
+    val context= LocalContext.current
 
 
     when (currentState) {
@@ -101,7 +101,13 @@ fun ContentArticle(
                                 elevation = 12.dp,
                                 spotColor = Color.Black,
                                 shape = RoundedCornerShape(16.dp)
-                            ).clickable { onFinished() }
+                            ).clickable {
+                                val intent= Intent(Intent.ACTION_SEND).apply {
+                                    type= "text/plain"
+                                    putExtra(Intent.EXTRA_TEXT,"${currentState.article.title}\n\n${currentState.article.url}")
+                                }
+                                context.startActivity(intent)
+                            }
                             .zIndex(1f)
                     ) {
                         Icon(
@@ -148,8 +154,11 @@ fun ContentArticle(
                     )
 
                     Spacer(modifier = Modifier.padding(16.dp))
+
                     Button(
                         onClick = {
+                            val intent= Intent(Intent.ACTION_VIEW,currentState.article.url.toUri())
+                            context.startActivity(intent)
                         }
                     ) { Text(
                         text = "Read full news",
