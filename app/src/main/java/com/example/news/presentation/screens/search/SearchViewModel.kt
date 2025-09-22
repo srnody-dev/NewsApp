@@ -9,8 +9,10 @@ import com.example.news.domain.usecase.GetTopArticlesUseCase
 import com.example.news.domain.usecase.UpdateArticlesForQueryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -27,7 +29,7 @@ class SearchViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val query = MutableStateFlow("")
-    private var _state = MutableStateFlow<SearchState>(SearchState.Initial())
+    private var _state = MutableStateFlow<SearchState>(SearchState.Search())
 
     val state = _state.asStateFlow()
 
@@ -36,15 +38,17 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             query
                 .flatMapLatest { input ->
-                    _state.update { SearchState.Initial(input) }
+                    _state.update { SearchState.Search(input) }
                     Log.d("SearchVM", "Processing query: '$input'")
+
+
 
                     if (input.isBlank()) {
                         Log.d("SearchVM", "Showing top articles")
                         getTopArticlesUseCase()
                             .map { articles ->
                                 Log.d("SearchVM", "Top articles: ${articles.size}")
-                                SearchState.Initial(
+                                SearchState.Search(
                                     query = input,
                                     topArticles = articles,
                                 )
@@ -61,7 +65,7 @@ class SearchViewModel @Inject constructor(
                         getArticlesForQueryUseCase(input)
                             .map { articles ->
                                 Log.d("SearchVM", "Search results: ${articles.size}")
-                                SearchState.Initial(
+                                SearchState.Search(
                                     query = input,
                                     resultArticles = articles
                                 )
@@ -95,7 +99,7 @@ class SearchViewModel @Inject constructor(
 
     sealed interface SearchState {
 
-        data class Initial(
+        data class Search(
             val query: String = "",
             val topArticles: List<Article> = emptyList(),
             val resultArticles: List<Article> = emptyList()

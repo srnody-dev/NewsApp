@@ -14,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import retrofit2.http.Url
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 

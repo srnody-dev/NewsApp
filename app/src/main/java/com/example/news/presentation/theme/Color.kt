@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 
 val WhiteBlue = Color(0xFFFCFDFF)
-val SkyBlue = Color(0xFF87CEEB)
+val SkyBlue = Color(0xFFd8e7f6)
 
 val Blue = Color(0xFF76a9FF)
 val BlueLight= Color(0xFFF9FCFE)

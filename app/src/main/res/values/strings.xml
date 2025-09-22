@@ -4,4 +4,9 @@
     <string name="trending_news">Trending news</string>
     <string name="see_all">See all</string>
     <string name="search_news">Search News...</string>
+    <string name="read_full_article">Read Full Article</string>
+    <string name="popular_articles">Popular articles</string>
+    <string name="found_articles">Found: %1$d articles</string>
+    <string name="unknown_source">Unknown source</string>
+    <string name="loading">Loading...</string>
 </resources>

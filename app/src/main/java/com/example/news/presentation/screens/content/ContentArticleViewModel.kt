@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
-import android.net.Uri
 
 @HiltViewModel()
 class ContentArticleViewModel @Inject constructor(
@@ -53,21 +52,13 @@ class ContentArticleViewModel @Inject constructor(
                 _state.update { ContentArticleState.Finished }
             }
 
-            is ContentArticleCommand.SwitchPinnedStatus -> {
-                //РЕАЛИЗУЙ ПОЗЖЕ
-            }
         }
-/*
-        @AssistedFactory
-        interface Factory{
-            fun create(@Assisted("url")url: String): ContentArticleViewModel
-        }*/
+
     }
 
 
     sealed interface ContentArticleCommand {
         data object Back : ContentArticleCommand
-        data class SwitchPinnedStatus(val articleId: Int) : ContentArticleCommand
     }
 
     sealed interface ContentArticleState {

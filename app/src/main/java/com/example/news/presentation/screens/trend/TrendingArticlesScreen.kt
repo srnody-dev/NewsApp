@@ -1,4 +1,4 @@
-package com.example.news.presentation.screens.search
+package com.example.news.presentation.screens.trend
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -6,33 +6,27 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,110 +37,73 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.example.news.R
 import com.example.news.domain.entity.Article
-import com.example.news.presentation.screens.search.SearchViewModel.SearchCommand.*
 import com.example.news.presentation.utils.formatDate
 
 
 @Composable
-fun SearchScreen(
+fun TrendingArticles(
     modifier: Modifier = Modifier,
-    viewModel: SearchViewModel = hiltViewModel(),
-    onFinished: () -> Unit,
+    viewmodel: TrendingArticlesViewModel = hiltViewModel(),
+    onFinish: () -> Unit,
     onArticleClick: (Article) -> Unit
 ) {
-    val state = viewModel.state.collectAsState()
+
+    val state = viewmodel.state.collectAsState()
     val currentState = state.value
 
 
     when (currentState) {
-        SearchViewModel.SearchState.Finished -> {
-            onFinished()
+        TrendingArticlesState.Finished -> {
+            onFinish()
         }
 
-        is SearchViewModel.SearchState.Search -> {
+        is TrendingArticlesState.TrendArticles -> {
+
             Scaffold(modifier = modifier) { innerPadding ->
                 Column(modifier = modifier.padding(8.dp)) {
 
 
-                Row(modifier = modifier
-                    .fillMaxWidth()
-                    .padding(innerPadding),
-                    verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(35.dp)
+                    Row(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .padding(innerPadding),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(35.dp)
+                                .clickable { viewmodel.proccessCommand(TrendingArticlesCommand.Back) },
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null,
+                        )
+                    }
 
-                            .clickable { viewModel.processCommand(SearchViewModel.SearchCommand.Back) }
-                        ,
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null,
+
+                    Text(
+                        modifier = Modifier.padding(start = 16.dp, bottom = 8.dp),
+                        text = "Trending Articles"
                     )
-                    SearchBar(
-                        modifier=modifier.padding(start = 8.dp, end = 8.dp),
-                        query = currentState.query,
-                        onQueryChange = { query ->
-                            viewModel.processCommand(InputQuery(query))
+
+                    LazyColumn(
+                        contentPadding = PaddingValues(horizontal = 16.dp)
+                    ) {
+
+                        items(currentState.topArticles, key = { it.url }) { article ->
+
+                            ArticleCard(article = article, onArticleClick = onArticleClick)
+
                         }
-                    )
-                }
-
-                    val infoArticles:String = if (currentState.query.isBlank()) {
-                        stringResource(R.string.popular_articles)
-                    } else stringResource(R.string.found_articles, currentState.resultArticles.size)
-
-                    Text(modifier= Modifier.padding(start = 16.dp, bottom = 8.dp),
-                        text=infoArticles
-                    )
-
-                LazyColumn(
-                    contentPadding = PaddingValues(horizontal = 16.dp)) {
-                    val articles = if (currentState.query.isBlank()) {
-                        currentState.topArticles
-                    } else currentState.resultArticles
-                    items(articles, key = { it.url }) { article ->
-
-                        ArticleCard(article = article, onArticleClick = onArticleClick)
-
                     }
                 }
-            }
 
             }
+
 
         }
-
     }
 
 }
-
-@Composable
-private fun SearchBar(
-    modifier: Modifier = Modifier,
-    query: String,
-    onQueryChange: (String) -> Unit
-) {
-    TextField(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        value = query,
-        onValueChange = onQueryChange,
-        placeholder = {
-            Text(
-                text = stringResource(R.string.search_news),
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        },
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.primary,
-            unfocusedContainerColor = MaterialTheme.colorScheme.primary,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-        )
-    )
-}
-
 
 @Composable
 private fun ArticleCard(
